@@ -1,5 +1,5 @@
 ActiveAdmin.register Account do
-  permit_params :slack_user_id, :ethereum_address
+  permit_params :slack_user_id_string, :ethereum_address
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
