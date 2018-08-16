@@ -1,5 +1,14 @@
 {
   "dependencies": {
     "start": "^5.1.0"
+  },
+  "engines": {
+    "node": "8.9.4",
+    "yarn": "1.6.0"
+  },
+  "scripts": {
+    "build": "cd client && yarn install && yarn build && cd ..",
+    "deploy": "cp -a client/build/. public/",
+    "heroku-postbuild": "yarn build && yarn deploy"
   }
 }
