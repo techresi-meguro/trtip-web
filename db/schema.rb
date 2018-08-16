@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180816131527) do
+ActiveRecord::Schema.define(version: 20180816143052) do
 
   create_table "accounts", force: :cascade do |t|
     t.text     "slack_user_id_string"
     t.text     "ethereum_address"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.index ["slack_user_id_string"], name: "index_accounts_on_slack_user_id_string", unique: true
   end
 
   create_table "active_admin_comments", force: :cascade do |t|
