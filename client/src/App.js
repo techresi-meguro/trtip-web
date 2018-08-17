@@ -151,33 +151,33 @@ class App extends Component {
               </Header.Content>
             </Header>
             <Divider hidden section />
-            <Menu pointing secondary>
+            <Menu pointing secondary style={{margin: 0}}>
               <Menu.Item name='Timeline' active={activeItem === 'Timeline'} onClick={this.handleItemClick} />
               <Menu.Item name='received' active={activeItem === 'received'} onClick={this.handleItemClick} />
               <Menu.Item name='given' active={activeItem === 'given'} onClick={this.handleItemClick} />
             </Menu>
             {eventLogs && eventLogs.length
-              ? <List relaxed>
+              ? <List divided relaxed style={{marginTop: 0}}>
                 {Object.keys(eventLogs).map((key) => {
                   const from = eventLogs[key]['from'].toLowerCase();
                   const to = eventLogs[key]['to'].toLowerCase();
                   const fromUserName = addressToUser[from] ? addressToUser[from].real_name : from;
-                  const fromUserImage = addressToUser[from] ? addressToUser[from].image_48 : '';
-                  const toUserImage = addressToUser[to] ? addressToUser[to].image_48 : '';
+                  const fromUserImage = addressToUser[from] ? addressToUser[from].image_32 : '';
+                  const toUserImage = addressToUser[to] ? addressToUser[to].image_72 : '';
                   const date = new Date(eventLogs[key].timestamp * 1000);
 
                   return (
-                    <List.Item key={key}>
-                      <Image src={fromUserImage} circular />
-                      <List.Content>
-                        <List.Header>{fromUserName}  <Label>{date.toLocaleString()}</Label></List.Header>
-                        <List.Description>
+                    <List.Item key={key} style={{paddingTop: 20, paddingBottom: 20 }}>
+                      <Image src={fromUserImage} />
+                      <List.Content style={{marginLeft: 10}}>
+                        <List.Header>{fromUserName}&nbsp;&nbsp;&nbsp;&nbsp;<Label>{date.toLocaleString()}</Label></List.Header>
+                        <List.Description style={{marginTop: 20}}>
                           <a>Slackメッセージ</a>にリアクションしました。
                         </List.Description>
                       </List.Content>
                       <List.Content floated='right'>
                         <Image src={toUserImage} circular />
-                        <Label circular color='orange' key='orange'>{eventLogs[key].value/1000000000000000000} TRTP</Label>
+                        <Label circular color='orange' key='orange'>+{eventLogs[key].value/1000000000000000000} TRTP</Label>
                       </List.Content>
                     </List.Item>
                   );
