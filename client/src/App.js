@@ -72,9 +72,9 @@ class App extends Component {
     this.web3 = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws'));
   }
 
-  componentDidMount () {
-    this.getUsers();
-    this.getAllEvents();
+  async componentDidMount () {
+    await this.getUsers();
+    this.getTransactions();
   }
 
   async fetch (endpoint, params) {
@@ -91,46 +91,73 @@ class App extends Component {
     const accounts = await this.fetch('/api/accounts')
     console.log(accounts);
     this.setState({ users: accounts });
+
+    let addressToUser = {};
+    accounts.forEach((account) => {
+      const address = account['ethereum_address'];
+      addressToUser[address] = account;
+    });
+    this.setState({ addressToUser: addressToUser });
   }
 
-  async getAllEvents () {
+  getTransactions () {
     this.trtipContract = new this.web3.eth.Contract(TRTIP_CONTRACT_ABI, TRTIP_CONTRACT_ADDRESS);
-    const events = await this.trtipContract.getPastEvents('allEvents', {
+    this.trtipContract.getPastEvents('allEvents', {
       fromBlock: 0,
       toBlock: 'latest',
     }, (error, events) => {
       console.log(error);
       console.log(events);
+
       Promise.all(events.map((event) => {
-        return this.web3.eth.getTransaction(event['transactionHash']); 
-      })).then ((transactions) => {
-        console.log(transactions);
+        return this.web3.eth.abi.decodeLog([{
+            type: 'address',
+            name: 'from',
+            indexed: true,
+          }, {
+            type: 'address',
+            name: 'to',
+            indexed: true,
+          }, {
+            type: 'uint256',
+            name: 'value',
+          }],
+          event.raw.data,
+          event.raw.topics,
+        );
+      })).then ((eventLogs) => {
+        console.log(eventLogs);
+        this.setState({ eventLogs: eventLogs });
       });
     });
-    console.log(events);
   }
 
   render() {
-    let {users} = this.state;
+    let { addressToUser, eventLogs} = this.state;
+    console.log(addressToUser);
 
-    return users
+    return addressToUser && eventLogs
        ?  <Container text>
             <Header as='h2' icon textAlign='center' color='teal'>
               <Icon name='unordered list' circular />
               <Header.Content>
-                List of Users
+                Latest Transactions
               </Header.Content>
             </Header>
             <Divider hidden section />
-            {users && users.length
+            {eventLogs && eventLogs.length
               ? <List>
-                {Object.keys(users).map((key) => {
-                return <List.Item key={key}>{users[key].real_name}</List.Item>
+                {Object.keys(eventLogs).map((key) => {
+                  const from = eventLogs[key].from;
+                  const to = eventLogs[key].to;
+                  console.log(eventLogs[key]['from']);
+                  const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
+                  const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
+                  return <List.Item key={key}>{fromUser}さん から {toUser}さん {eventLogs[key].value}コイン 送付されました！</List.Item>
                 })}
                 </List>
-              : <Container textAlign='center'>No users found.</Container>
+              : <Container textAlign='center'>No Transactions found.</Container>
             }
-
           </Container>
         : <Container text>
             <Dimmer active inverted>
