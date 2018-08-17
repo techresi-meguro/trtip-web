@@ -105,6 +105,7 @@ class App extends Component {
     this.trtipContract.getPastEvents('allEvents', {
       fromBlock: 0,
       toBlock: 'latest',
+      topics: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'],
     }, (error, events) => {
       console.log(error);
       console.log(events);
@@ -123,7 +124,7 @@ class App extends Component {
             name: 'value',
           }],
           event.raw.data,
-          event.raw.topics,
+          event.raw.topics.slice(1),
         );
       })).then ((eventLogs) => {
         console.log(eventLogs);
@@ -148,12 +149,13 @@ class App extends Component {
             {eventLogs && eventLogs.length
               ? <List>
                 {Object.keys(eventLogs).map((key) => {
-                  const from = eventLogs[key].from;
-                  const to = eventLogs[key].to;
-                  console.log(eventLogs[key]['from']);
+                  const from = eventLogs[key]['from'].toLowerCase();
+                  const to = eventLogs[key]['to'].toLowerCase();
+                  console.log(from);
+                  console.log(to);
                   const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
                   const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
-                  return <List.Item key={key}>{fromUser}さん から {toUser}さん {eventLogs[key].value}コイン 送付されました！</List.Item>
+                  return <List.Item key={key}>{fromUser}さん が {toUser}さんに {eventLogs[key].value}コイン 送りました！</List.Item>
                 })}
                 </List>
               : <Container textAlign='center'>No Transactions found.</Container>
