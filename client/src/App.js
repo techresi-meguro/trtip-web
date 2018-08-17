@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Icon, Divider, List, Dimmer, Loader, Image } from 'semantic-ui-react';
+import { Container, Header, Icon, Divider, List, Dimmer, Loader, Image, Label } from 'semantic-ui-react';
 
 const TRTIP_CONTRACT_ADDRESS = '0x8C78e1124cF417C549655F80EF987492ee4fD826';
 const TRTIP_CONTRACT_ABI = [
@@ -151,22 +151,22 @@ class App extends Component {
                 {Object.keys(eventLogs).map((key) => {
                   const from = eventLogs[key]['from'].toLowerCase();
                   const to = eventLogs[key]['to'].toLowerCase();
-                  const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
-                  const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
+                  const fromUserName = addressToUser[from] ? addressToUser[from].real_name : from;
                   const fromUserImage = addressToUser[from] ? addressToUser[from].image_48 : '';
                   const toUserImage = addressToUser[to] ? addressToUser[to].image_48 : '';
 
                   return (
                     <List.Item key={key}>
-                      <Image avator src={fromUserImage} />
+                      <Image avator src={fromUserImage} circular />
                       <List.Content>
-                        <List.Header as='a'>{fromUser}</List.Header>
+                        <List.Header as='a'>{fromUserName}</List.Header>
                         <List.Description>
-                          <b>{eventLogs[key].value/1000000000000000000} TRTP</b> 送りました！
+                          <a>Slackメッセージ</a>にリアクションしました。
                         </List.Description>
                       </List.Content>
                       <List.Content floated='right'>
-                        <Image avator src={toUserImage} />
+                        <Image avator src={toUserImage} circular />
+                        <Label circular color='orange' key='orange'>{eventLogs[key].value/1000000000000000000} TRTP</Label>
                       </List.Content>
                     </List.Item>
                   );
