@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Icon, Divider, List, Dimmer, Loader } from 'semantic-ui-react';
 
-const SLACK_AUTH_TOKEN = '<SLACK_AUTH_TOKEN>'
-
 class App extends Component {
   constructor () {
     super()
@@ -26,18 +24,8 @@ class App extends Component {
 
   async getUsers () {
     const accounts = await this.fetch('/api/accounts')
-    Promise.all(accounts.map(async (account) => {
-      const user = await this.fetch(
-        `https://slack.com/api/users.profile.get?token=${SLACK_AUTH_TOKEN}&user=${account.slack_user_id_string}`,
-        {
-          method: 'GET',
-        }
-      )
-      return user.profile
-    }))
-    .then((users) => {
-      this.setState({ users: users });
-    });
+    console.log(accounts);
+    this.setState({ users: accounts });
   }
 
   render() {
@@ -55,7 +43,7 @@ class App extends Component {
             {users && users.length
               ? <List>
                 {Object.keys(users).map((key) => {
-                return <List.Item>{users[key].real_name}</List.Item>
+                return <List.Item key={key}>{users[key].real_name}</List.Item>
                 })}
                 </List>
               : <Container textAlign='center'>No users found.</Container>

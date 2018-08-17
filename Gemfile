@@ -26,6 +26,8 @@ gem 'puma', '~> 3.0'
 # ActiveAdmin
 gem 'devise'
 gem 'activeadmin'
+gem 'dotenv-rails'
+gem 'faraday'
 
 group :development, :test do
   # Use sqlite3 as the database for Active Record
