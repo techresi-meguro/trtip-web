@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Icon, Divider, List, Dimmer, Loader } from 'semantic-ui-react';
+import { Container, Header, Icon, Divider, List, Dimmer, Loader, Image } from 'semantic-ui-react';
 
 const TRTIP_CONTRACT_ADDRESS = '0x8C78e1124cF417C549655F80EF987492ee4fD826';
 const TRTIP_CONTRACT_ABI = [
@@ -153,7 +153,19 @@ class App extends Component {
                   const to = eventLogs[key]['to'].toLowerCase();
                   const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
                   const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
-                  return <List.Item key={key}>{fromUser}さん が {toUser}さんに {eventLogs[key].value/1000000000000000000}TRTP 送りました！</List.Item>
+                  const fromUserImage = addressToUser[from] ? addressToUser[from].image_48 : '';
+
+                  return (
+                    <List.Item key={key}>
+                      <Image avator src={fromUserImage} />
+                      <List.Content>
+                        <List.Header as='a'>{fromUser}</List.Header>
+                        <List.Description>
+                          {toUser}さんに {eventLogs[key].value/1000000000000000000}TRTP 送りました！
+                        </List.Description>
+                      </List.Content>
+                    </List.Item>
+                  );
                 })}
                 </List>
               : <Container textAlign='center'>No Transactions found.</Container>
