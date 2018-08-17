@@ -128,7 +128,7 @@ class App extends Component {
         );
       })).then ((eventLogs) => {
         console.log(eventLogs);
-        this.setState({ eventLogs: eventLogs });
+        this.setState({ eventLogs: eventLogs.reverse() });
       });
     });
   }
@@ -147,13 +147,14 @@ class App extends Component {
             </Header>
             <Divider hidden section />
             {eventLogs && eventLogs.length
-              ? <List>
+              ? <List relaxed>
                 {Object.keys(eventLogs).map((key) => {
                   const from = eventLogs[key]['from'].toLowerCase();
                   const to = eventLogs[key]['to'].toLowerCase();
                   const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
                   const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
                   const fromUserImage = addressToUser[from] ? addressToUser[from].image_48 : '';
+                  const toUserImage = addressToUser[to] ? addressToUser[to].image_48 : '';
 
                   return (
                     <List.Item key={key}>
@@ -161,8 +162,11 @@ class App extends Component {
                       <List.Content>
                         <List.Header as='a'>{fromUser}</List.Header>
                         <List.Description>
-                          {toUser}さんに {eventLogs[key].value/1000000000000000000}TRTP 送りました！
+                          <b>{eventLogs[key].value/1000000000000000000} TRTP</b> 送りました！
                         </List.Description>
+                      </List.Content>
+                      <List.Content floated='right'>
+                        <Image avator src={toUserImage} />
                       </List.Content>
                     </List.Item>
                   );
