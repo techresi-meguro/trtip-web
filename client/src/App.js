@@ -110,8 +110,11 @@ class App extends Component {
       console.log(error);
       console.log(events);
 
-      Promise.all(events.map((event) => {
-        return this.web3.eth.abi.decodeLog([{
+      Promise.all(events.map(async (event) => {
+        console.log(event.blockNumber);
+        const block = await this.web3.eth.getBlock(event.blockNumber);
+        const timestamp = block.timestamp;
+        const eventLog = this.web3.eth.abi.decodeLog([{
             type: 'address',
             name: 'from',
             indexed: true,
@@ -126,6 +129,7 @@ class App extends Component {
           event.raw.data,
           event.raw.topics.slice(1),
         );
+        return Object.assign({ timestamp: timestamp }, eventLog);
       })).then ((eventLogs) => {
         console.log(eventLogs);
         this.setState({ eventLogs: eventLogs.reverse() });
@@ -135,7 +139,6 @@ class App extends Component {
 
   render() {
     let { addressToUser, eventLogs} = this.state;
-    console.log(addressToUser);
 
     return addressToUser && eventLogs
        ?  <Container text>
@@ -154,18 +157,19 @@ class App extends Component {
                   const fromUserName = addressToUser[from] ? addressToUser[from].real_name : from;
                   const fromUserImage = addressToUser[from] ? addressToUser[from].image_48 : '';
                   const toUserImage = addressToUser[to] ? addressToUser[to].image_48 : '';
+                  const date = new Date(eventLogs[key].timestamp * 1000);
 
                   return (
                     <List.Item key={key}>
-                      <Image avator src={fromUserImage} circular />
+                      <Image src={fromUserImage} circular />
                       <List.Content>
-                        <List.Header as='a'>{fromUserName}</List.Header>
+                        <List.Header>{fromUserName}  <Label>{date.toLocaleString()}</Label></List.Header>
                         <List.Description>
                           <a>Slackメッセージ</a>にリアクションしました。
                         </List.Description>
                       </List.Content>
                       <List.Content floated='right'>
-                        <Image avator src={toUserImage} circular />
+                        <Image src={toUserImage} circular />
                         <Label circular color='orange' key='orange'>{eventLogs[key].value/1000000000000000000} TRTP</Label>
                       </List.Content>
                     </List.Item>
