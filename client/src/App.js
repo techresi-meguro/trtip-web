@@ -101,6 +101,11 @@ class App extends Component {
     }, (error, events) => {
       console.log(error);
       console.log(events);
+      Promise.all(events.map((event) => {
+        return this.web3.eth.getTransaction(event['transactionHash']); 
+      })).then ((transactions) => {
+        console.log(transactions);
+      });
     });
     console.log(events);
   }
