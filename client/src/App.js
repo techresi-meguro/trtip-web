@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Icon, Divider, List, Dimmer, Loader, Image, Label } from 'semantic-ui-react';
+import { Container, Header, Icon, Divider, List, Dimmer, Loader, Image, Label, Menu } from 'semantic-ui-react';
 
 const TRTIP_CONTRACT_ADDRESS = '0x8C78e1124cF417C549655F80EF987492ee4fD826';
 const TRTIP_CONTRACT_ABI = [
@@ -65,7 +65,7 @@ const TRTIP_CONTRACT_ABI = [
 class App extends Component {
   constructor () {
     super()
-    this.state = {}
+    this.state = { activeItem: 'Timeline' }
     this.getUsers = this.getUsers.bind(this)
 
     const Web3 = require('web3');
@@ -76,6 +76,8 @@ class App extends Component {
     await this.getUsers();
     this.getTransactions();
   }
+
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   async fetch (endpoint, params) {
     try {
@@ -138,7 +140,7 @@ class App extends Component {
   }
 
   render() {
-    let { addressToUser, eventLogs} = this.state;
+    let { activeItem, addressToUser, eventLogs} = this.state;
 
     return addressToUser && eventLogs
        ?  <Container text>
@@ -149,6 +151,11 @@ class App extends Component {
               </Header.Content>
             </Header>
             <Divider hidden section />
+            <Menu pointing secondary>
+              <Menu.Item name='Timeline' active={activeItem === 'Timeline'} onClick={this.handleItemClick} />
+              <Menu.Item name='received' active={activeItem === 'received'} onClick={this.handleItemClick} />
+              <Menu.Item name='given' active={activeItem === 'given'} onClick={this.handleItemClick} />
+            </Menu>
             {eventLogs && eventLogs.length
               ? <List relaxed>
                 {Object.keys(eventLogs).map((key) => {
