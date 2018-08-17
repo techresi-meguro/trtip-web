@@ -95,7 +95,7 @@ class App extends Component {
     let addressToUser = {};
     accounts.forEach((account) => {
       const address = account['ethereum_address'];
-      addressToUser[address] = account;
+      addressToUser[address.toLowerCase()] = account;
     });
     this.setState({ addressToUser: addressToUser });
   }
@@ -151,8 +151,6 @@ class App extends Component {
                 {Object.keys(eventLogs).map((key) => {
                   const from = eventLogs[key]['from'].toLowerCase();
                   const to = eventLogs[key]['to'].toLowerCase();
-                  console.log(from);
-                  console.log(to);
                   const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
                   const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
                   return <List.Item key={key}>{fromUser}さん が {toUser}さんに {eventLogs[key].value}コイン 送りました！</List.Item>
