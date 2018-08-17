@@ -153,7 +153,7 @@ class App extends Component {
                   const to = eventLogs[key]['to'].toLowerCase();
                   const fromUser = addressToUser[from] ? addressToUser[from].real_name : from;
                   const toUser = addressToUser[to] ? addressToUser[to].real_name : to;
-                  return <List.Item key={key}>{fromUser}さん が {toUser}さんに {eventLogs[key].value}コイン 送りました！</List.Item>
+                  return <List.Item key={key}>{fromUser}さん が {toUser}さんに {eventLogs[key].value/1000000000000000000}TRTP 送りました！</List.Item>
                 })}
                 </List>
               : <Container textAlign='center'>No Transactions found.</Container>
